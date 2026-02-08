@@ -170,7 +170,7 @@ map "\$ocw_has_token:\$args" \$ocw_proxy_args {
 }
 
 server {
-    listen 8080 default_server;
+    listen ${PORT:-8080} default_server;
     server_name _;
 
     location = /healthz {
@@ -250,7 +250,7 @@ GATEWAY_ARGS=(
   --port "$GATEWAY_PORT"
   --verbose
   --allow-unconfigured
-  --bind loopback
+  --bind "${OPENCLAW_GATEWAY_BIND:-loopback}"
 )
 
 GATEWAY_ARGS+=(--token "$GATEWAY_TOKEN")
