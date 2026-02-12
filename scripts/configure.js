@@ -605,6 +605,7 @@ if (process.env.CAMPFIRE_BOT_KEY && process.env.CAMPFIRE_BASE_URL) {
   config.channels.campfire.enabled = true;
   config.channels.campfire.botKey = process.env.CAMPFIRE_BOT_KEY;
   config.channels.campfire.baseUrl = process.env.CAMPFIRE_BASE_URL.replace(/\/+$/, "");
+  if (process.env.CAMPFIRE_WEBHOOK_PATH)  config.channels.campfire.webhookPath = process.env.CAMPFIRE_WEBHOOK_PATH;
 } else if (config.channels?.campfire) {
   console.log("[configure] Campfire channel configured (from custom JSON)");
   ensure(config, "plugins", "entries", "campfire");

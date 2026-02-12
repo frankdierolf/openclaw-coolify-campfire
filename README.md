@@ -294,8 +294,13 @@ Mount a persistent volume at the sidecar's profile directory (`/home/kasm-user`)
 | `WHATSAPP_ACK_REACTION_GROUP` | `mentions` | Group reaction behavior: `always`, `mentions`, or `never`. |
 | `WHATSAPP_MESSAGE_PREFIX` | | Inbound message prefix. |
 | `WHATSAPP_ACTIONS_REACTIONS` | `true` | Enable WhatsApp tool reactions. |
+| `CAMPFIRE_BOT_KEY` | | Campfire bot key (format: `{id}-{token}` from `/account/bots`). Both `CAMPFIRE_BOT_KEY` and `CAMPFIRE_BASE_URL` required. |
+| `CAMPFIRE_BASE_URL` | | Campfire instance URL (e.g. `https://3.basecamp.com/12345`). |
+| `CAMPFIRE_WEBHOOK_PATH` | `/campfire` | Inbound webhook path (bypasses HTTP basic auth). Set as the webhook URL in Campfire's bot settings. |
 
 If a channel env var is removed, that channel is cleaned from config on next start. WhatsApp env vars fully overwrite any existing WhatsApp config (no merge with custom JSON).
+
+**Webhook auth bypass:** Channels that receive inbound webhooks (Campfire, Slack in HTTP mode, Telegram in webhook mode) automatically get nginx location blocks that bypass HTTP basic auth, so external services can POST without credentials. The gateway handles request validation internally.
 
 ### Provider overrides (optional)
 
