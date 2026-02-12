@@ -1,4 +1,4 @@
-ARG BASE_IMAGE=ghcr.io/coollabsio/openclaw-base:latest
+ARG BASE_IMAGE=ghcr.io/frankdierolf/openclaw-coolify-campfire-base:latest
 
 FROM ${BASE_IMAGE}
 

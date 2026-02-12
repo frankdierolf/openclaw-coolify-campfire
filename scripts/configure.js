@@ -595,6 +595,24 @@ if (process.env.BROWSER_CDP_URL) {
   console.log("[configure] browser configured (from custom JSON)");
 }
 
+// ── Campfire channel (37signals) ─────────────────────────────────────────
+// Gate: CAMPFIRE_BOT_KEY (required) + CAMPFIRE_BASE_URL (required)
+if (process.env.CAMPFIRE_BOT_KEY && process.env.CAMPFIRE_BASE_URL) {
+  console.log("[configure] configuring Campfire channel (from env)");
+  ensure(config, "plugins", "entries", "campfire");
+  config.plugins.entries.campfire.enabled = true;
+  ensure(config, "channels", "campfire");
+  config.channels.campfire.enabled = true;
+  config.channels.campfire.botKey = process.env.CAMPFIRE_BOT_KEY;
+  config.channels.campfire.baseUrl = process.env.CAMPFIRE_BASE_URL.replace(/\/+$/, "");
+} else if (config.channels?.campfire) {
+  console.log("[configure] Campfire channel configured (from custom JSON)");
+  ensure(config, "plugins", "entries", "campfire");
+  if (config.plugins.entries.campfire.enabled === undefined) {
+    config.plugins.entries.campfire.enabled = true;
+  }
+}
+
 // ── Validate: at least one provider API key env var must be set ──────────────
 // All providers (built-in and custom) read API keys from env vars, not from JSON.
 const hasProvider =
