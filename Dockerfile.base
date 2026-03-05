@@ -21,15 +21,24 @@ WORKDIR /openclaw
 ARG OPENCLAW_GIT_REF=feat/campfire-plugin
 RUN git clone --depth 1 --branch "${OPENCLAW_GIT_REF}" https://github.com/frankdierolf/openclaw.git .
 
-# Patch: relax version requirements for packages using workspace protocol.
+# Patch: relax hard version pins (>=X.Y.Z) so pnpm can resolve from the
+# workspace.  Keep workspace: protocol intact — pnpm will link the local
+# package automatically.
 RUN set -eux; \
   find ./extensions -name 'package.json' -type f | while read -r f; do \
     sed -i -E 's/"openclaw"[[:space:]]*:[[:space:]]*">=[^"]+"/"openclaw": "*"/g' "$f"; \
-    sed -i -E 's/"openclaw"[[:space:]]*:[[:space:]]*"workspace:[^"]+"/"openclaw": "*"/g' "$f"; \
   done
 
 RUN pnpm install --no-frozen-lockfile
 RUN pnpm build
+
+# Jiti (TypeScript loader used for .ts extensions at runtime) cannot resolve
+# subpath exports like "openclaw/plugin-sdk/campfire".  Rewrite those imports
+# to the base "openclaw/plugin-sdk" path which resolves correctly via the CJS
+# root-alias proxy.
+RUN find ./extensions/campfire -name '*.ts' -exec \
+  sed -i 's|from "openclaw/plugin-sdk/campfire"|from "openclaw/plugin-sdk"|g' {} +
+
 ENV OPENCLAW_PREFER_PNPM=1
 RUN pnpm ui:install && pnpm ui:build
 
